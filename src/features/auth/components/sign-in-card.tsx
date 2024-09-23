@@ -15,12 +15,14 @@ import { SignInFlow } from "../types";
 import { useState } from "react";
 
 import { useAuthActions } from "@convex-dev/auth/react";
+import { useRouter } from "next/navigation";
 
 interface SignInCardProps {
     setState: (state: SignInFlow) => void;
 }
 
 export const SignInCard = ({ setState }: SignInCardProps) => {
+  const router = useRouter();
   const { signIn } = useAuthActions();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,6 +39,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
       })
       .finally(() => {
         setPending(false);
+        router.replace('/');
       })
   }
 
@@ -45,6 +48,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
     signIn(value)
     .finally(() => {
       setPending(false)
+      router.replace('/');
     });
   };
 
