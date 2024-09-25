@@ -19,6 +19,16 @@ export default function Home() {
 
   const workspaceId = useMemo(() => data?.[0]?._id, [data])
 
+  /**This is our homepage, used to create the initial workspace for a user by holding a location to show the modal
+   * used in the creation thereof without using the auth pages as a background. Our functions below here force the
+   * user to create a new workspace if they have none, as well as redirect them to the first available workspace
+   * if they have one that does exist. In addition, this page will redirect the user to their workspace when they 
+   * create a new one. The useEffect hook first waits for the API call to finish, then will look to see if there's
+   * an available workspace. If there is, it forces the user to that workspace page, and if there is not, it forces
+   * the creation modal open so the user can create a new one.
+   *  This page will also define the presence of the user photo for access to the logout button and other such user
+   * features.
+   */
   useEffect(() => {
     if(isLoading) return;
 

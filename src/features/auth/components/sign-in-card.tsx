@@ -17,18 +17,34 @@ import { useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useRouter } from "next/navigation";
 
+/**An interface allows you to set up a property that has a forced typing, and will cause an error if a value is entered
+ * that doesn't conform to that setting. This is extremely useful for cases like this where our SignInFlow is a state
+ * that is extremely sensitive to value, and thus needs protection being changed outside of that small list of values.
+ */
 interface SignInCardProps {
     setState: (state: SignInFlow) => void;
 }
 
 export const SignInCard = ({ setState }: SignInCardProps) => {
   const router = useRouter();
+  /**useAuthActions is a Convex provided hook that allows for the use of basic authentication functions and methods
+   * without being forced to write our own methods to simplify such things. This allows simply for access to 'signIn'
+   * and 'signOut', hence why the types provided in SignInFlow are so sensitive.
+   */
   const { signIn } = useAuthActions();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('')
   const [pending, setPending] = useState(false);
 
+  /**The following two functions are both sign-in functions, the first allowing for standard email/password entry signin,
+   * the latter being the way to sign in via one of our OAuth providers. The information within these blocks can be 
+   * customized to perform the functions wanted within the current app, but will usually be fairly similar.
+   *  OAuth providers are much more simple in the setup code, as they provide almost all of the information theirselves.
+   *  In addition to this, we throw a useRouter hook within the finally block of both in order to forcefully route the
+   * user away from the sign-in and over to the main page, preventing relying on the user for something so tedious as
+   * changing URLs after signing up
+   */
   const onPasswordSignIn = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

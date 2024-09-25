@@ -1,6 +1,8 @@
 import { query } from "./_generated/server";
 import { auth } from "./auth";
 
+
+//see workspaces.ts for notes and information
 export const current = query({
     args: {},
     handler: async (ctx) => {

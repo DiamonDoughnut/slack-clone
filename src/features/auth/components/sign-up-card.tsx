@@ -20,6 +20,13 @@ interface SignUpCardProps {
     setState: (state: SignInFlow) => void;
 }
 
+/**This file is nearly identical to the SignInCard, changing only the functional names and using the other side of our
+ * SignInFlow state, as well as providing an extra input field for Password confirmation. As the password is only used
+ * within a single field in our database, we don't send both with the request, only using the confirmation input to 
+ * check against the initial value, exiting the function early with a warning if they do not match, otherwise running
+ * the registration logic and, like with the sign-in page, forcefully routing the user to the home page. 
+ */
+
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
     const router = useRouter();
     const { signIn } = useAuthActions();
