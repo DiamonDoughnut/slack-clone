@@ -2,6 +2,20 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { auth } from "./auth";
 
+/**For creating join codes, we use the generateCode function to create a unique, encrypted string that will link
+ * to a specific workspace and allow any user who inputs it to join that channel and see its content
+ */
+const generateCode = () => {
+    const code = Array.from(
+        { length: 6 }, 
+        () => 
+            '0123456789abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 36)]
+        
+    ).join('');
+
+    return code;
+}
+
 /*The statement here is a direct API database interaction call that changes or creates a determined document/type on 
 the database being used. mutation is a server-side call that directly connects to the database's code and performs
 the requested function. All server-api calls are entered as an object with the properties of args and handler.
@@ -36,10 +50,11 @@ export const create = mutation({
          * 'throw' keyword, exiting the function early without completing the request.
          */
         if(!userId) {
+            
             throw new Error('Unauthorized');
         }
 
-        const joinCode = '123456';
+        const joinCode = generateCode();
 
         /** The 'insert' function is part of the database object, and takes 2 parameters: the database table being
          * worked with, and the information that will be added as lines in the created document. Convex makes this 
@@ -55,6 +70,15 @@ export const create = mutation({
             joinCode
         })
 
+        /**assign the user who creates the database as a member and an admin in relation to the newly created 
+         * workspace. This will keep the flow of creation smooth, while allowing for privacy in dm's and workspaces.
+         */
+        await ctx.db.insert('members', {
+            userId,
+            workspaceId,
+            role: 'admin'
+        })
+
         return workspaceId;
     }
 })
@@ -68,6 +92,45 @@ export const create = mutation({
 export const get = query({
     args: {},
     handler: async (ctx) => {
+        const userId = await auth.getUserId(ctx);
+
+        /**Because errors can't be caught during a standard query, instead of using a throw new Error call, we simply
+         * return an empty array and will handle a redirect later.
+         */
+        if(!userId) {
+            return [];
+        }
+
+        /**This code here will modify our search on login to find all workspaces that the user is a member of. To do
+         * this, we are searching the db with the schema indexes we created to directly pick the workspace objects 
+         * that contain a 'userId' field that matches the currently logged in user.
+         */
+
+        const members = await ctx.db.query('members').withIndex('by_user_id', (q) => q.eq('userId', userId)).collect();
+
+        /**Once we have the list of workspace objects tied to a member Id, we need to search through those and return 
+         * a list of each of their ids in an array we can use to render those workspaces once we do a bit more work
+         */
+        const workspaceIds = members.map((member) => member.workspaceId);
+
+        /**We first create an empty array in order to prep our variable for future use within the proper scope, then
+         * we use a for loop, iterating over the array by item, not by length, and using a db query to pull the array
+         * of renderable workspaces so that when we return that list, the user can't see any workspaces they shouldn't.
+         * 
+         * The reason we use this type of iteration on the array and not a map, is that making an asynchronous request 
+         * is much cleaner when doing it this way - the Promise All method within a .map() call can get very messy if 
+         * we need to query more than one thing.
+         */
+        const workspaces = []
+
+        for (const workspaceId of workspaceIds) {
+            const workspace = await ctx.db.get(workspaceId);
+
+            if(workspace) {
+                workspaces.push(workspace);
+            }
+        }
+
        return await ctx.db.query('workspaces').collect();
     }
 })
@@ -86,8 +149,17 @@ export const getById = query({
         const userId = await auth.getUserId(ctx);
 
         if(!userId) {
-            throw new Error('Unauthorized');
+            
+            throw new Error('Unauthorized'); 
+            //TODO - change to effective forced redirect to compensate for lagged redirect - or force page reload.
         }
+
+        const member = await ctx.db.query('members').withIndex('by_workspace_id_user_id', (q) => q.eq('workspaceId', args.id).eq('userId', userId)).unique();
+
+        if(!member) {
+            return null
+        }
+
         /**the get() function call is provided by Convex as an alternative to the standard 'query' call, only requiring
          * one arg to be passed in as a standard variable and returning the first doc that's found to match and satisfy
          * the requirement. This is best used when a search is performed for a unique ID attached to the doc, such as, in

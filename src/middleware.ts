@@ -13,6 +13,9 @@ import { convexAuthNextjsMiddleware,
         createRouteMatcher, 
         isAuthenticatedNextjs,
         nextjsMiddlewareRedirect } from "@convex-dev/auth/nextjs/server";
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
+  
 
 /**createRouteMatcher is a middleware function that creates a route with the app's home domain followed by the string
  * entered within the array. Adding more data to this array allows for defining a series of pages, and the variable 
