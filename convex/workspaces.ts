@@ -154,7 +154,11 @@ export const getById = query({
             //TODO - change to effective forced redirect to compensate for lagged redirect - or force page reload.
         }
 
-        const member = await ctx.db.query('members').withIndex('by_workspace_id_user_id', (q) => q.eq('workspaceId', args.id).eq('userId', userId)).unique();
+        const member = await ctx.db
+            .query('members')
+            .withIndex('by_workspace_id_user_id', (q) => 
+                q.eq('workspaceId', args.id).eq('userId', userId))
+            .unique();
 
         if(!member) {
             return null
@@ -168,5 +172,102 @@ export const getById = query({
          * on the website when using a pre-built schema.
          */
         return await ctx.db.get(args.id);
+    }
+})
+
+export const update = mutation({
+    args: {
+        id: v.id('workspaces'),
+        name: v.string()
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+
+        if(!userId) {
+            
+            throw new Error('Unauthorized'); 
+            //TODO - change to effective forced redirect to compensate for lagged redirect - or force page reload.
+        }
+
+        const member = await ctx.db
+            .query('members')
+            .withIndex('by_workspace_id_user_id', (q) => 
+                q.eq('workspaceId', args.id).eq('userId', userId))
+            .unique();
+            
+        if(!member || member.role !== 'admin') {
+            throw new Error('Unauthorized');
+        }    
+        
+        /**The .patch() method on the database object provided by Convex is the method used to modify a value within
+         * the target doc. It takes two parameters: first the unique Id of the doc you are trying to modify, and 
+         * second: an object containing the names of the fields you want to modify as the properties, and the values
+         * you want to update those to as their related values.
+         */
+        await ctx.db.patch(args.id, {
+            name: args.name
+        })
+
+        return args.id;
+    }
+})
+
+export const remove = mutation({
+    args: {
+        id: v.id('workspaces'),
+    },
+    handler: async (ctx, args) => {
+        const userId = await auth.getUserId(ctx);
+
+        if(!userId) {
+            
+            throw new Error('Unauthorized'); 
+            //TODO - change to effective forced redirect to compensate for lagged redirect - or force page reload.
+        }
+
+        const member = await ctx.db
+            .query('members')
+            .withIndex('by_workspace_id_user_id', (q) => 
+                q.eq('workspaceId', args.id).eq('userId', userId))
+            .unique();
+            
+        if(!member || member.role !== 'admin') {
+            throw new Error('Unauthorized');
+        }    
+        
+        /**The .delete() method is provided by the Convex database and simply locates the doc associated with the
+         * inserted parameter and removes it from the database completely. This, however does not remove associated
+         * fields within other tables that aren't related to the database targeted by this api file, so we will need
+         * to create an additional method afterwards to deal with that - in this case, deleting the member list for
+         * the workspace that's being deleted. This action is called cascading and is a non-default procedure.
+         * 
+         * The function here will call forward the list of members associated with our workspace targeted for removal,
+         * allowing us to then work with that list directly upon deletion. This will help later when we're looking at
+         * removing channels and other similar workspace sub-spaces.
+         * 
+         * The Promise.all() function is the method useable to bring forward an API call with a .map() method attached
+         * to an array in direct React Components, and will always return a list of promises. We deal with this by 
+         * specifying that our variable that's being assigned to it is within an array, and will therefore be much 
+         * easier to work with down the line. The Promise.all() method takes a single parameter, being an array of 
+         * API queries - the code for which is simplified for us greatly by Convex's inbuilt code. Because this is an
+         * array, cascading database deletes is extremely simple: just pass more queries into the array, separated by
+         * a comma, for each entry you wish to delete alongside the target.
+         */
+        const [members] = await Promise.all([
+            ctx.db
+              .query('members')
+              .withIndex('by_workspace_id', (q) => (
+                q.eq('workspaceId', args.id)  
+              ))
+              .collect()
+        ]);
+
+        for(const member of members){
+            await ctx.db.delete(member._id);
+        }
+
+        await ctx.db.delete(args.id);
+
+        return args.id;
     }
 })

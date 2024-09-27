@@ -10,8 +10,9 @@ import { Hint } from "@/components/hint";
 
 import { Doc } from "../../../../convex/_generated/dataModel";
 
-
 import { ChevronDown, ListFilter, SquarePen } from "lucide-react";
+import { PreferencesModal } from "./preferences-modal";
+import { useState } from "react";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
@@ -22,53 +23,61 @@ export const WorkspaceHeader = ({
   workspace,
   isAdmin,
 }: WorkspaceHeaderProps) => {
+    const [preferencesOpen, setPreferencesOpen] = useState(false);
+
   return (
-    <div
-      className='
-                flex
-                items-center
-                justify-between
-                px-4
-                h-[49px]
+    <>
+      <PreferencesModal 
+        open={preferencesOpen} 
+        setOpen={setPreferencesOpen} 
+        initialValue={workspace.name} 
+      />
+      <div
+        className='
+      flex
+      items-center
+      justify-between
+      px-4
+      h-[49px]
                 gap-0.5
             '
-    >
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant='transparent'
-            className='
+      >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant='transparent'
+              className='
                             font-semibold
                             text-lg
                             w-auto
                             p-1.5
                             overflow-hidden
                         '
-            size='sm'
-          >
-            <span className='truncate'>{workspace.name}</span>
-            <ChevronDown
-              className='
+              size='sm'
+            >
+              <span className='truncate'>{workspace.name}</span>
+              <ChevronDown
+                className='
                                 size-4
                                 ml-1
                                 shrink-0
                             '
-            />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          side='bottom'
-          align='start'
-          className='w-64'
-        >
-          <DropdownMenuItem
-            className='
+              />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side='bottom'
+            align='start'
+            className='w-64'
+          >
+            <DropdownMenuItem
+              className='
                             cursor-pointer
                             capitalize
                         '
-          >
-            <div
-              className='
+            >
+              <div
+                className='
                                 size-9
                                 relative
                                 overflow-hidden
@@ -82,52 +91,67 @@ export const WorkspaceHeader = ({
                                 items-center
                                 mr-2
                             '
+              >
+                {workspace.name.charAt(0).toUpperCase()}
+              </div>
+              <div className='flex flex-col items-start'>
+                <p className='font-bold'>{workspace.name}</p>
+                <p className='text-xs text-muted-foreground'>
+                  Active Workspace
+                </p>
+              </div>
+            </DropdownMenuItem>
+            {isAdmin && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className='
+                            cursor-pointer
+                            py-2
+                        '
+                  onClick={() => {}}
+                >
+                  Invite People to {workspace.name}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className='
+                            cursor-pointer
+                            py-2
+                        '
+                  onClick={() => setPreferencesOpen(true)}
+                >
+                  Preferences
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+          <div className='flex items-center gap-0.5'>
+            <Hint
+              label='Filter Conversations'
+              side='bottom'
             >
-              {workspace.name.charAt(0).toUpperCase()}
-            </div>
-            <div className='flex flex-col items-start'>
-              <p className='font-bold'>{workspace.name}</p>
-              <p className='text-xs text-muted-foreground'>Active Workspace</p>
-            </div>
-          </DropdownMenuItem>
-          {isAdmin && (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className='
-                            cursor-pointer
-                            py-2
-                        '
-                onClick={() => {}}
+              <Button
+                variant='transparent'
+                size='iconSm'
               >
-                Invite People to {workspace.name}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className='
-                            cursor-pointer
-                            py-2
-                        '
-                onClick={() => {}}
+                <ListFilter className='size-4' />
+              </Button>
+            </Hint>
+            <Hint
+              label='New Message'
+              side='bottom'
+            >
+              <Button
+                variant='transparent'
+                size='iconSm'
               >
-                Preferences
-              </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-        <div className="flex items-center gap-0.5">
-            <Hint label="Filter Conversations" side="bottom">
-                <Button variant='transparent' size='iconSm'>
-                   <ListFilter className="size-4" />
-                </Button>
+                <SquarePen className='size-4' />
+              </Button>
             </Hint>
-            <Hint label='New Message' side="bottom">
-                <Button variant='transparent' size='iconSm'>
-                    <SquarePen className="size-4" />
-                </Button>
-            </Hint>
-        </div>
-      </DropdownMenu>
-    </div>
+          </div>
+        </DropdownMenu>
+      </div>
+    </>
   );
 };

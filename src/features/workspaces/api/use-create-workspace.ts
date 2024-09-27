@@ -106,10 +106,10 @@ export const useCreateWorkspace = () => {
             setStatus('success')
             return response;
         } catch (error) {
+            setStatus('error');
             options?.onError?.(error as Error);
             
             if(options?.throwError) {
-                setStatus('error');
                 throw error;
             }
         } finally {

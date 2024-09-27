@@ -19,6 +19,8 @@ export default function Home() {
 
   const workspaceId = useMemo(() => data?.[0]?._id, [data])
 
+  
+
   /**This is our homepage, used to create the initial workspace for a user by holding a location to show the modal
    * used in the creation thereof without using the auth pages as a background. Our functions below here force the
    * user to create a new workspace if they have none, as well as redirect them to the first available workspace
@@ -31,7 +33,9 @@ export default function Home() {
    */
   useEffect(() => {
     if(isLoading) return;
-
+    if(!workspaceId){
+        router.replace('/auth');
+      }
     if(workspaceId) {
       console.log('redirect to workspace')
       router.replace(`/workspace/${workspaceId}`)
