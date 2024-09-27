@@ -79,6 +79,18 @@ export const create = mutation({
             role: 'admin'
         })
 
+        /**in the same way as inserting our initial member/admin, we now add our initial channel to the workspace.
+         * Channels are the main way our users will interact with the page, viewing and adding messages visible to 
+         * all members. (I believe, at this time, that they will also be utilized for direct messages, as this
+         * would be the simplest way to do so - a direct message is nothing more than a chat room that only holds
+         * two people, thus making it private. If this note remains, I was correct in this assumption and it can be
+         * taken as direct notation.)
+         */
+        await ctx.db.insert('channels', {
+            name: 'general',
+            workspaceId
+        })
+
         return workspaceId;
     }
 })
@@ -212,6 +224,13 @@ export const update = mutation({
     }
 })
 
+/**The 'remove' function built here is our deletion option, but it cannot be named 'delete', as that is a protected
+ * word within javascript and typescript. Just like our other api calls and manipulations, we take first an args
+ * object that tells the method what sort of parameters it will receive, and then we build out an asynchronous 
+ * handler function, passing in first the context(abbreviated ctx) of the api call (this being the specific page
+ * wherein the call is made as well as all other pre-defined variables, in this case the current user and the members
+ * of the relevant table), and the second being the args object from above. 
+ */
 export const remove = mutation({
     args: {
         id: v.id('workspaces'),
@@ -225,6 +244,26 @@ export const remove = mutation({
             //TODO - change to effective forced redirect to compensate for lagged redirect - or force page reload.
         }
 
+        /**The query here shows the proper use of the withIndex() method described in schema.ts. It's more complex
+         * than most, so it's best placed here, where it can then be indirectly activated by simply calling our 
+         * mutation method. using the context of the query call, we use the db object to then query, or search, for
+         * any and all docs that have a field of 'members'. Then the withIndex function comes into play, filtering
+         * the list of docs to only then fit those with the proper workspace and user ids.
+         * 
+         *  The withIndex function takes 2 parameters, the first being the name given for the index we will be using
+         * as defined in schema.ts. The second parameter is a callback function which takes the query directly as an 
+         * input, then searching that query's return for specific entries with the 'eq()' method. 
+         * 
+         * The .eq() method also takes two parameters: the doc header which we are searching under,
+         * and the exact values we are searching for, either pulled directly from the mutation's arguments as seen here
+         * with the workspaceId search (args.id) or extracted directly within this handler function as seen with the userId
+         * search (userId as a const described above).
+         * 
+         * The query is set to return only a single response, so to turn the data into a singular object, we use the .unique()
+         * method at the end, letting the query know that there will only be a singular matching entry within the database, 
+         * so after finding the first it can stop looking. (it does not stop looking, so unique() should not be used to find
+         * the first entry match, as it will throw an error if the value requested is not, in fact, unique).
+         */
         const member = await ctx.db
             .query('members')
             .withIndex('by_workspace_id_user_id', (q) => 
@@ -252,6 +291,13 @@ export const remove = mutation({
          * API queries - the code for which is simplified for us greatly by Convex's inbuilt code. Because this is an
          * array, cascading database deletes is extremely simple: just pass more queries into the array, separated by
          * a comma, for each entry you wish to delete alongside the target.
+         * 
+         * in contrast to the .unique() method described above, the .collect() method at the end of our query tells our
+         * database that we want it to return an array of every object that matches our query. This allows us to create
+         * comprehensive lists in our page and is used often when listing out things such as comment threads, pages 
+         * available to a certain user, or even lists of invoices/receipts for e-commerce sites. This is likely similar
+         * to how sites like Amazon list out all of your previous orders, or sites like Reddit list out all previous 
+         * comments on a post.
          */
         const [members] = await Promise.all([
             ctx.db

@@ -1,7 +1,9 @@
 'use client';
 
-import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
 import { useEffect, useState } from "react";
+
+import { CreateChannelModal } from "@/features/channels/components/create-channel-modal";
+import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
 
 /** Modals create something called a 'Hydration Error' when there are too many opening, or when they are opened
  * by the client before they're properly loaded by the server - thus we use this component to ensure that our client
@@ -21,6 +23,7 @@ export const Modals = () => {
 
     return (
         <>
+            <CreateChannelModal />
             <CreateWorkspaceModal />
         </>
     )

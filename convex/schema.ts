@@ -18,6 +18,12 @@ import { v } from "convex/values";
  * into a manner that is understandable by the database server. When exporting the schema, we allow ourselves to call this 
  * data structure into other locations which allows us to share this data with other parts of the backend/middleware that
  * may need more clarification for its functions.
+ * 
+ * Each newly created table can then be modified with one or more .index() methods, passing in two arguments. The first
+ * is the string name of the index that we will use within our api calls, and the second is an array of the document
+ * headers that it will try to search through for our query - these each being a string for this parameter. This allows
+ * us to quite simply build our own query setups, rather than building out a query(where)... method, we can simply
+ * add a .withIndex() method call to a standard query, as seen within the workspaces.ts file in this same folder. 
  */
 const schema = defineSchema({
   ...authTables,
@@ -34,6 +40,11 @@ const schema = defineSchema({
     .index('by_user_id', ['userId'])
     .index('by_workspace_id', ['workspaceId'])
     .index('by_workspace_id_user_id', ['workspaceId', 'userId']),
+  channels: defineTable({
+    name: v.string(),
+    workspaceId: v.id('workspaces')
+  })
+    .index('by_workspace_id', ['workspaceId'])  
 
 });
  

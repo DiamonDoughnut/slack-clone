@@ -13,6 +13,7 @@ import { Doc } from "../../../../convex/_generated/dataModel";
 import { ChevronDown, ListFilter, SquarePen } from "lucide-react";
 import { PreferencesModal } from "./preferences-modal";
 import { useState } from "react";
+import { InviteModal } from "./invite-modal";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
@@ -27,6 +28,7 @@ export const WorkspaceHeader = ({
 
   return (
     <>
+      <InviteModal />
       <PreferencesModal 
         open={preferencesOpen} 
         setOpen={setPreferencesOpen} 
