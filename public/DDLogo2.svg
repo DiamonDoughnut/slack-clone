@@ -1,0 +1,15 @@
+<svg width="1140" height="1024" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_14">
+   <path id="svg_4" d="m360.06531,318.17964l-0.93329,0.63618l0.93329,0.63618l-0.53337,0.36379l-1.46666,-0.99996l1.46666,-1.00004" stroke="#000" fill="#fff"/>
+   <path id="svg_5" d="m407.83026,242.38269l-1.39992,0.31809l1.39992,0.31809l-0.80004,0.18189l-2.19996,-0.49998l2.19996,-0.50002" stroke="#000" fill="#fff"/>
+   <path id="svg_9" d="m434.9793,106.59708l-184.47927,203.01887l184.4964,202.98109l67.10555,-73.82171l-117.42349,-129.1594l117.39909,-129.15951l-67.09827,-73.85936l0,0.00003zm269.99969,0l-67.05695,73.84063l117.39951,129.15935l-117.39951,129.14361l67.05695,73.82133l184.52099,-202.99968l-184.52099,-202.96524z" stroke="#000" fill="#5f00bf"/>
+   <path transform="rotate(135, 570.051, 306.922)" id="svg_10" d="m453.52473,288.46361l233.05173,0l0,36.91674l-233.05173,0l0,-36.91674z" stroke="#000" fill="#5f00bf"/>
+   <path id="svg_11" d="m433.96559,188" opacity="NaN" stroke="#000" fill="#fff"/>
+   <text font-style="normal" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="monospace" font-size="99" stroke-width="0" id="svg_12" y="293" x="480.96559" stroke="#000" fill="#5f00bf">D</text>
+   <text font-weight="bold" xml:space="preserve" text-anchor="start" font-family="monospace" font-size="99" id="svg_13" y="387" x="606.96559" stroke-width="0" stroke="#000" fill="#5f00bf">D</text>
+  </g>
+ </g>
+</svg>
