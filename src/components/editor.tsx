@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { Delta, Op } from 'quill/core';
 import { MdSend } from 'react-icons/md'
-import { PiKeyReturnLight, PiTextAa } from 'react-icons/pi'
+import { PiTextAa } from 'react-icons/pi'
 import { MutableRefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ImageIcon, Smile, XIcon } from 'lucide-react';
 import Quill, { QuillOptions } from 'quill'
@@ -182,18 +182,10 @@ const Editor = ({
               className='hidden'  
             />
             <div
-              className="
-                flex
-                flex-col
-                border
-                border-slate-200
-                rounded-md
-                overflow-hidden
-                focus-within:border-slate-300
-                focus-within:shadow-sm
-                transition
-                bg-white
-              "
+              className={cn(
+                "flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:border-slate-300 focus-within:shadow-sm transition bg-white",
+                disabled && 'opacity-50'
+              )}
             >
                 <div ref={containerRef} className='h-full ql-custom' />
                 {!!image && (
