@@ -4,6 +4,7 @@ import { format, isYesterday, isToday } from "date-fns";
 
 import { useUpdateMessage } from "@/features/messages/api/use-update-message";
 import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
+import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
 
 import { cn } from "@/lib/utils";
 import { useConfirm } from "@/hooks/useConfirm";
@@ -11,6 +12,7 @@ import { useConfirm } from "@/hooks/useConfirm";
 import { Hint } from "./hint";
 import { Toolbar } from "./toolbar";
 import { Thumbnail } from "./thumbnail";
+import { Reactions } from "./reactions";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 import { Doc, Id } from "../../convex/_generated/dataModel";
@@ -82,8 +84,17 @@ export const Message = ({
     useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } = 
     useRemoveMessage();  
+  const { mutate: toggleReaction, isPending: isTogglingReaction } = useToggleReaction();  
 
-  const isPending = isUpdatingMessage || isRemovingMessage;
+  const isPending = isUpdatingMessage || isRemovingMessage || isTogglingReaction;
+
+  const handleReaction = (value: string) => {
+    toggleReaction({ messageId: id, value }, {
+      onError: () => {
+        toast.error('Reaction Failed')
+      }
+    })
+  }
 
   const handleRemove = async () => {
     const ok = await confirm();
@@ -153,6 +164,10 @@ export const Message = ({
             {updatedAt && (
               <span className='text-xs text-muted-foreground'>(edited)</span>
             )}
+            <Reactions
+              data={reactions}
+              onChange={handleReaction}
+            />
           </div>
         </div>
       )}
@@ -164,7 +179,7 @@ export const Message = ({
           handleThread={() => {}}
           handleDelete={handleRemove}
           hideThreadButton={hideThreadButton}
-          handleReaction={() => {}}
+          handleReaction={handleReaction}
         />
       )}
     </div>
@@ -218,6 +233,10 @@ export const Message = ({
             {updatedAt && (
               <span className='text-xs text-muted-foreground'>(edited)</span>
             )}
+            <Reactions
+              data={reactions}
+              onChange={handleReaction}
+            />
           </div>
         )}
       </div>
@@ -229,7 +248,7 @@ export const Message = ({
           handleThread={() => {}}
           handleDelete={handleRemove}
           hideThreadButton={hideThreadButton}
-          handleReaction={() => {}}
+          handleReaction={handleReaction}
         />
       )}
     </div>
