@@ -1,4 +1,5 @@
 'use client'
+import { Loader } from 'lucide-react';
 
 import { 
     ResizableHandle, 
@@ -10,6 +11,9 @@ import React from "react";
 import { Toolbar } from "./toolbar";
 import { Sidebar } from "./sidebar";
 import { WorkspaceSidebar } from './workspace-sidebar';
+import { usePanel } from '@/hooks/use-panel';
+import { Id } from '../../../../convex/_generated/dataModel';
+import { Thread } from '@/features/messages/components/thread';
 
 /**Interfaces in a layout page define that our 'children' property - that being the list of nesting HTML Elements that
  * will be called to display - are a type of ReactNode, meaning their props can be affected and messed with here
@@ -20,6 +24,12 @@ interface WorkspaceIdLayoutProps {
 }
 
 const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
+    const { parentMessageId, onClose } = usePanel();
+    
+    const showPanel = !!parentMessageId;
+
+
+
     return (
         (<div className="h-full">
             <Toolbar />
@@ -41,7 +51,30 @@ const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
                         minSize={20}
                     >
                         {children}
-                    </ResizablePanel>    
+                    </ResizablePanel>   
+                    {showPanel && (
+                        <>
+                            <ResizableHandle withHandle />
+                            <ResizablePanel
+                                minSize={20}
+                                defaultSize={29}
+                            >
+                                {parentMessageId 
+                                    ? (
+                                        <Thread 
+                                            messageId={parentMessageId as Id<'messages'>}
+                                            onClose={onClose}
+                                        />
+                                    )
+                                    : (
+                                        <div className='flex h-full items-center justify-center'>
+                                            <Loader className='size-5 animate-spin text-muted-foreground' />
+                                        </div> 
+                                    )
+                                }
+                            </ResizablePanel>
+                        </>
+                    )} 
                 </ResizablePanelGroup>
             </div>
         </div>)

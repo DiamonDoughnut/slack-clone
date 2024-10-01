@@ -30,8 +30,6 @@ const formatDateLabel = (dateStr: string) => {
     if (isToday(date)) return 'Today';
     if (isYesterday(date)) return 'Yesterday';
     return format(date, 'EEEE, MMMM d');
-    
-
 }
 
 export const MessageList = ({

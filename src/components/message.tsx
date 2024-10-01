@@ -7,6 +7,7 @@ import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
 import { useToggleReaction } from "@/features/reactions/api/use-toggle-reaction";
 
 import { cn } from "@/lib/utils";
+import { usePanel } from "@/hooks/use-panel";
 import { useConfirm } from "@/hooks/useConfirm";
 
 import { Hint } from "./hint";
@@ -75,6 +76,8 @@ export const Message = ({
   threadTimestamp,
 }: MessageProps) => {
   const avatarFallback = authorName.charAt(0).toUpperCase();
+
+  const { parentMessageId, onOpenMessage, onClose } = usePanel();
   const [ConfirmDialog, confirm] = useConfirm(
     'Delete Message?',
     'This action is irreversible.'
@@ -105,7 +108,9 @@ export const Message = ({
       onSuccess: () => {
         toast.success('Message Deleted');
 
-        //TODO - Close thread if last opened
+        if (parentMessageId === id) {
+          onClose();
+        }
       },
       onError: () => {
 
@@ -176,7 +181,7 @@ export const Message = ({
           isAuthor={isAuthor}
           isPending={isPending}
           handleEdit={() => setEditingId(id)}
-          handleThread={() => {}}
+          handleThread={() => onOpenMessage(id)}
           handleDelete={handleRemove}
           hideThreadButton={hideThreadButton}
           handleReaction={handleReaction}
@@ -245,7 +250,7 @@ export const Message = ({
           isAuthor={isAuthor}
           isPending={isPending}
           handleEdit={() => setEditingId(id)}
-          handleThread={() => {}}
+          handleThread={() => onOpenMessage(id)}
           handleDelete={handleRemove}
           hideThreadButton={hideThreadButton}
           handleReaction={handleReaction}
