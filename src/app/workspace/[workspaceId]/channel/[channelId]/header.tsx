@@ -110,7 +110,7 @@ export const Header = ({ name }: HeaderProps) => {
                 '
             size={"sm"}
           >
-            <span className='truncate'># {name}</span>
+            <span className='truncate'>#{name}</span>
             <FaChevronDown className='size-2.5 ml-2' />
           </Button>
         </DialogTrigger>

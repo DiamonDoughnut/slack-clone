@@ -5,6 +5,7 @@ import {
   Loader,
   MessageSquareText,
   SendHorizontal,
+  PanelLeftIcon
 } from "lucide-react";
 //Feature Hooks
 import { useGetMembers } from "@/features/members/api/use-get-members";
@@ -91,8 +92,8 @@ export const WorkspaceSidebar = () => {
         {channels?.map((item) => (
           <SidebarItem
             key={item._id}
-            icon={HashIcon}
-            label={item.name}
+            icon={PanelLeftIcon}
+            label={`#${item.name}`}
             id={item._id}
             variant={channelId === item._id ? "active" : "default"}
           />
