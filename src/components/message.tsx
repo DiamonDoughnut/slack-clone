@@ -3,8 +3,10 @@ import { toast } from "sonner";
 import { format, isYesterday, isToday } from "date-fns";
 
 import { useUpdateMessage } from "@/features/messages/api/use-update-message";
+import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
 
 import { cn } from "@/lib/utils";
+import { useConfirm } from "@/hooks/useConfirm";
 
 import { Hint } from "./hint";
 import { Toolbar } from "./toolbar";
@@ -71,10 +73,36 @@ export const Message = ({
   threadTimestamp,
 }: MessageProps) => {
   const avatarFallback = authorName.charAt(0).toUpperCase();
+  const [ConfirmDialog, confirm] = useConfirm(
+    'Delete Message?',
+    'This action is irreversible.'
+  );
+
   const { mutate: updateMessage, isPending: isUpdatingMessage } =
     useUpdateMessage();
+  const { mutate: removeMessage, isPending: isRemovingMessage } = 
+    useRemoveMessage();  
 
-  const isPending = isUpdatingMessage;
+  const isPending = isUpdatingMessage || isRemovingMessage;
+
+  const handleRemove = async () => {
+    const ok = await confirm();
+
+    if(!ok) return;
+    
+    removeMessage({ id }, {
+      onSuccess: () => {
+        toast.success('Message Deleted');
+
+        //TODO - Close thread if last opened
+      },
+      onError: () => {
+
+        toast.error('Delete Failed')
+      
+      }
+    })
+  }
 
   const handleUpdate = ({ body }: { body: string }) => {
     updateMessage(
@@ -92,10 +120,14 @@ export const Message = ({
   };
 
   return isCompact ? (
+    <>
+    <ConfirmDialog />
     <div
       className={cn(
         "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
-        isEditing && "bg-[#F2C74433] hover:bg-[#F2C74433]"
+        isEditing && "bg-[#F2C74433] hover:bg-[#F2C74433]",
+        isRemovingMessage && 
+          'bg-rose-500/50 transform transition-all scale-y-0 origin-bottom duration-200'
       )}
     >
       {isEditing ? (
@@ -130,17 +162,22 @@ export const Message = ({
           isPending={isPending}
           handleEdit={() => setEditingId(id)}
           handleThread={() => {}}
-          handleDelete={() => {}}
+          handleDelete={handleRemove}
           hideThreadButton={hideThreadButton}
           handleReaction={() => {}}
         />
       )}
     </div>
+    </>
   ) : (
+    <>
+    <ConfirmDialog />
     <div
       className={cn(
         "flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
-        isEditing && "bg-[#F2C74433] hover:bg-[#F2C74433]"
+        isEditing && "bg-[#F2C74433] hover:bg-[#F2C74433]",
+        isRemovingMessage && 
+          'bg-rose-500/50 transform transition-all scale-y-0 origin-bottom duration-200'
       )}
     >
       <div className='flex items-start gap-2'>
@@ -190,11 +227,12 @@ export const Message = ({
           isPending={isPending}
           handleEdit={() => setEditingId(id)}
           handleThread={() => {}}
-          handleDelete={() => {}}
+          handleDelete={handleRemove}
           hideThreadButton={hideThreadButton}
           handleReaction={() => {}}
         />
       )}
     </div>
+    </>
   );
 };
