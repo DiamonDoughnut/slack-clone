@@ -53,7 +53,7 @@ export const MessageList = ({
     console.log(typeof data)
 
     const groupedMessages = data?.reduce(
-        (groups, message) => {
+        (groups: any, message: any) => {
             const date = new Date(message._creationTime);
             const dateKey = format(date, 'yyyy/MM/dd');
             // console.log(date)
@@ -71,7 +71,7 @@ export const MessageList = ({
     return (
 
         <div className="flex-1 flex flex-col-reverse pb-4 overflow-y-auto messages-scrollbar">
-            {Object.entries(groupedMessages || {}).map(([dateKey, messages]) => (
+            {Object.entries(groupedMessages || {}).map(([dateKey, messages]: [any, any]) => (
                 <div key={dateKey}>
                     <div className="text-center my-2 relative">
                         <hr className="absolute top-1/2 left-0 right-0 border-top border-gray-300" />
@@ -79,7 +79,7 @@ export const MessageList = ({
                             {formatDateLabel(dateKey)}
                         </span>
                     </div>
-                    {messages.map((message, index) => {
+                    {messages.map((message: any, index: any) => {
                         const prevMessage = messages[index-1];
                         const isCompact = 
                             prevMessage &&

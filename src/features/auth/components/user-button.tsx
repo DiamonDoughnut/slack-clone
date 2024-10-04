@@ -56,7 +56,7 @@ export const UserButton = () => {
 
     const handleSignOut = async () => {
         router.push('/auth'); 
-        await signOut().finally(router.refresh());
+        await signOut().finally(() => router.refresh());
     }
 
     return (
