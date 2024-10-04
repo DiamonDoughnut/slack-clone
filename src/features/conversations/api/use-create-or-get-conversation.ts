@@ -40,6 +40,7 @@ export const useCreateOrGetConversation = () => {
             const response = await mutation(values);
             options?.onSuccess?.(response)
             setStatus('success')
+            setData(response)
             return response;
         } catch (error) {
             setStatus('error');
@@ -53,6 +54,8 @@ export const useCreateOrGetConversation = () => {
             setStatus('settled')
         }
     }, [mutation]);
+
+
 
     return {
         mutate,

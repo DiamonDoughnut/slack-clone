@@ -14,6 +14,7 @@ import { Hint } from "./hint";
 import { Toolbar } from "./toolbar";
 import { Thumbnail } from "./thumbnail";
 import { Reactions } from "./reactions";
+import { ThreadBar } from "./thread-bar";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 import { Doc, Id } from "../../convex/_generated/dataModel";
@@ -43,6 +44,7 @@ interface MessageProps {
   hideThreadButton?: boolean;
   threadCount?: number;
   threadImage?: string;
+  threadName?: string;
   threadTimestamp?: number;
 }
 
@@ -73,6 +75,7 @@ export const Message = ({
   hideThreadButton,
   threadCount,
   threadImage,
+  threadName,
   threadTimestamp,
 }: MessageProps) => {
   const avatarFallback = authorName.charAt(0).toUpperCase();
@@ -173,6 +176,13 @@ export const Message = ({
               data={reactions}
               onChange={handleReaction}
             />
+            <ThreadBar 
+              count={threadCount}
+              image={threadImage}
+              timestamp={threadTimestamp}
+              name={threadName}
+              onClick={() => onOpenMessage(id)}
+            />
           </div>
         </div>
       )}
@@ -241,6 +251,13 @@ export const Message = ({
             <Reactions
               data={reactions}
               onChange={handleReaction}
+            />
+            <ThreadBar 
+              count={threadCount}
+              image={threadImage}
+              timestamp={threadTimestamp}
+              name={threadName}
+              onClick={() => onOpenMessage(id)}
             />
           </div>
         )}
