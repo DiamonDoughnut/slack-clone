@@ -1,3 +1,5 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 import dynamic from "next/dynamic";
 import Quill from "quill";
 import { Loader, XIcon, AlertTriangle } from "lucide-react";
