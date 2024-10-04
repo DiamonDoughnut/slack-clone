@@ -97,7 +97,9 @@ export const PreferencesModal = ({
 
   return (
     <>
-      <ConfirmDialog className='bg-slate-50 bg-opacity-90' />
+      <div className='bg-slate-50 bg-opacity-90'>
+        <ConfirmDialog />
+      </div>
       <Dialog
         open={open}
         onOpenChange={setOpen}

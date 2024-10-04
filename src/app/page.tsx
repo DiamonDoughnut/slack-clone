@@ -1,11 +1,11 @@
 'use client';
 
-import { UserButton } from "@/features/auth/components/user-button";
 import { useCreateWorkspaceModal } from "@/features/workspaces/store/use-create-workspace-modal";
 
 import { useGetWorkspaces } from "@/features/workspaces/api/use-get-workspaces";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
 
 
 
@@ -47,7 +47,7 @@ export default function Home() {
 
   return (
     <div>
-      <UserButton />
+      <Loader className="size-10 animate-spin text-muted-foreground" />
     </div>
   );
 }
