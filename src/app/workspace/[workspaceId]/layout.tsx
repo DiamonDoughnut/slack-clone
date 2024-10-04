@@ -14,6 +14,7 @@ import { WorkspaceSidebar } from './workspace-sidebar';
 import { usePanel } from '@/hooks/use-panel';
 import { Id } from '../../../../convex/_generated/dataModel';
 import { Thread } from '@/features/messages/components/thread';
+import { Profile } from '@/features/members/components/profile';
 
 /**Interfaces in a layout page define that our 'children' property - that being the list of nesting HTML Elements that
  * will be called to display - are a type of ReactNode, meaning their props can be affected and messed with here
@@ -24,9 +25,9 @@ interface WorkspaceIdLayoutProps {
 }
 
 const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
-    const { parentMessageId, onClose } = usePanel();
+    const { parentMessageId, profileMemberId, onClose } = usePanel();
     
-    const showPanel = !!parentMessageId;
+    const showPanel = !!parentMessageId || !!profileMemberId;
 
 
 
@@ -66,7 +67,14 @@ const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
                                             onClose={onClose}
                                         />
                                     )
-                                    : (
+                                    : profileMemberId
+                                    ? (
+                                        <Profile 
+                                          memberId={profileMemberId as Id<'members'>}
+                                          onClose={onClose}
+                                        />
+                                    ) :
+                                    (
                                         <div className='flex h-full items-center justify-center'>
                                             <Loader className='size-5 animate-spin text-muted-foreground' />
                                         </div> 

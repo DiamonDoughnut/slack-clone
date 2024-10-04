@@ -80,7 +80,7 @@ export const Message = ({
 }: MessageProps) => {
   const avatarFallback = authorName.charAt(0).toUpperCase();
 
-  const { parentMessageId, onOpenMessage, onClose } = usePanel();
+  const { parentMessageId, onOpenMessage, onOpenProfile, onClose } = usePanel();
   const [ConfirmDialog, confirm] = useConfirm(
     'Delete Message?',
     'This action is irreversible.'
@@ -211,7 +211,7 @@ export const Message = ({
       )}
     >
       <div className='flex items-start gap-2'>
-        <button>
+        <button onClick={() => onOpenProfile(memberId)}>
           <Avatar>
             <AvatarImage src={authorImage} />
             <AvatarFallback>{avatarFallback}</AvatarFallback>
@@ -232,7 +232,7 @@ export const Message = ({
             <div className='text-sm'>
               <button
                 className='font-bold text-primary hover:underline'
-                onClick={() => {}}
+                onClick={() => onOpenProfile(memberId)}
               >
                 {authorName}
               </button>
