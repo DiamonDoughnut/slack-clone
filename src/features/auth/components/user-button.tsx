@@ -33,7 +33,7 @@ export const UserButton = () => {
     /**This allows for the implementation of a skeleton loading state - using our isLoading variable from the 
      * useCurrentUser hook to display the conditional return only while the API call hasn't resolved. The return
      * here can also be more complex - closer to the normal page, but at that stage, the better thing to do would be
-     * to use a ternery operator.
+     * to use a ternary operator.
      */
     if(isLoading) {
         return <Loader className="size-4 animate-spin text-muted-foreground" />
