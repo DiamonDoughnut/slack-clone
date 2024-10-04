@@ -1,3 +1,5 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
 import { useState } from 'react';
 import { Id } from '../../convex/_generated/dataModel';
 import { format, isToday, isYesterday, differenceInMinutes } from 'date-fns'
