@@ -36,10 +36,10 @@ export const WorkspaceSidebar = () => {
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
     id: workspaceId,
   });
-  const { data: channels, isLoading: channelsLoading } = useGetChannels({
+  const { data: channels } = useGetChannels({
     workspaceId,
   });
-  const { data: members, isLoading: membersLoading } = useGetMembers({
+  const { data: members } = useGetMembers({
     workspaceId,
   });
 
@@ -103,7 +103,7 @@ export const WorkspaceSidebar = () => {
       <WorkspaceSection
         label='Direct Messages'
         hint='New Direct Message'
-        onNew={() => {}}
+        onNew={member.role === 'admin' ? () => setOpen(true) : setOpen(_open)}
       >
         {members?.map((item) => (
           <UserItem

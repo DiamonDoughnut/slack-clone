@@ -17,7 +17,7 @@ const MemberIdPage = () => {
 
     const [conversationId, setConversationId] = useState<Id<'conversations'> | null>(null)
 
-    const { data, mutate, isPending } = useCreateOrGetConversation();
+    const { mutate, isPending } = useCreateOrGetConversation();
 
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const MemberIdPage = () => {
             onSuccess(data) {
                 setConversationId(data)
             },
-            onError(_error) {
+            onError() {
                 toast.error('Failed to Retrieve Conversation')
             }
         }

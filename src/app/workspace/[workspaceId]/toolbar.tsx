@@ -3,20 +3,16 @@ import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import { useWorkspaceId } from "@/hooks/useWorkspaceId"
 import { Info, Search } from "lucide-react"
 import {
-    Command,
     CommandDialog,
     CommandEmpty,
     CommandGroup,
     CommandInput,
     CommandItem,
     CommandList,
-    CommandSeparator,
-    CommandShortcut
-} from '@/components/ui/command'
+    CommandSeparator} from '@/components/ui/command'
 import { useState } from "react";
 import { useGetChannels } from "@/features/channels/api/use-get-channels";
 import { useGetMembers } from "@/features/members/api/use-get-members";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 //This is a component for the [workspaceId] page.tsx, but with app-router, we don't need it to be in a specific

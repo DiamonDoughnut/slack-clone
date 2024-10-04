@@ -14,7 +14,6 @@ import { ChevronDown, ListFilter, SquarePen } from "lucide-react";
 import { PreferencesModal } from "./preferences-modal";
 import { useState } from "react";
 import { InviteModal } from "./invite-modal";
-import { useNewJoinCode } from "@/features/workspaces/api/use-new-join-code";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;

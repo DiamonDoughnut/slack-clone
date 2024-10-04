@@ -46,7 +46,7 @@ export const UserButton = () => {
     /**This is a destructuring of the data we wish to use, so as to avoid the unnecessary use of dot notation when
      * calling these variables. This allows for easier reading of our code as well as easier debugging if needed. 
      */
-    const { image, name, email } = data
+    const { image, name } = data
 
     /**If the user profile doesn't have an included image, we use this to fall back on a simple circle with the first
      * letter of their input name in the center. This allows the user to feel as if they're still getting the full 

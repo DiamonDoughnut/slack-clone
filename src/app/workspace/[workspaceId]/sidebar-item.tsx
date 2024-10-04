@@ -2,7 +2,6 @@ import Link from "next/link";
 import { LucideIcon } from "lucide-react";
 import { IconType } from "react-icons/lib";
 
-import { Id } from "../../../../convex/_generated/dataModel";
 
 import { Button } from "@/components/ui/button";
 

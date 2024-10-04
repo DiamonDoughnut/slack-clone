@@ -3,7 +3,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
@@ -25,9 +24,10 @@ const WorkspaceSwitcher = () => {
      * re-assignments to something that helps to easily differentiate between them so as to avoid confusion.
      */
     const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({ id: workspaceId });
-    const { data: workspaces, isLoading: workspacesLoading } = useGetWorkspaces();
-
+    const { data: workspaces } = useGetWorkspaces();
+        console.log(_open)
     const filteredWorkspaces = workspaces?.filter(
+        
         (workspace) => workspace?._id !== workspaceId
     )
 
