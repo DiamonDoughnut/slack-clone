@@ -79,13 +79,13 @@ export const WorkspaceSidebar = () => {
         <SidebarItem
           label='Threads'
           icon={MessageSquareText}
-          id='threads'
+          id=''
           isInactive={true}
         />
         <SidebarItem
           label='Drafts & Sent'
           icon={SendHorizontal}
-          id='drafts'
+          id=''
           isInactive={true}
         />
       </div>
