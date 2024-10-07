@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 //Icons
 import {
   AlertTriangle,
@@ -79,11 +80,13 @@ export const WorkspaceSidebar = () => {
           label='Threads'
           icon={MessageSquareText}
           id='threads'
+          isInactive={true}
         />
         <SidebarItem
           label='Drafts & Sent'
           icon={SendHorizontal}
           id='drafts'
+          isInactive={true}
         />
       </div>
       <WorkspaceSection

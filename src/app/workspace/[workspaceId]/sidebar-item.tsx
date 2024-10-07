@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import Link from "next/link";
 import { LucideIcon } from "lucide-react";
 import { IconType } from "react-icons/lib";
@@ -43,14 +44,16 @@ interface SidebarItemProps {
     label: string;
     id: string;
     icon: LucideIcon | IconType;
-    variant?:  VariantProps<typeof sidebarItemVariants>['variant']
+    variant?:  VariantProps<typeof sidebarItemVariants>['variant'];
+    isInactive?: boolean;
 };
 
 export const SidebarItem = ({
     label,
     id,
     icon: Icon,
-    variant
+    variant,
+    isInactive
 }: SidebarItemProps) => {
     const workspaceId = useWorkspaceId();
 
@@ -77,6 +80,7 @@ export const SidebarItem = ({
             size='sm'
             asChild
             className={cn(sidebarItemVariants({ variant: variant }))}
+            disabled={isInactive}
         >
             <Link href={`/workspace/${workspaceId}/channel/${id}`}>
                 <Icon className="size-3.5 mr-1 shrink-0" />
